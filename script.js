@@ -9,6 +9,7 @@ class MoodTracker {
     init() {
         this.loadMoods();
         this.setupEventListeners();
+        this.loadCustomMoods();
         this.updateUI();
     }
 
@@ -41,6 +42,216 @@ class MoodTracker {
         // 檔案輸入事件監聽器
         document.getElementById('importFile').addEventListener('change', (e) => {
             this.handleFileImport(e);
+        });
+
+        // 自訂心情相關事件監聽器
+        this.setupCustomMoodListeners();
+    }
+
+    setupCustomMoodListeners() {
+        // Emoji選擇器
+        document.querySelectorAll('.emoji-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // 移除其他選中的emoji
+                document.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
+                // 選中當前emoji
+                option.classList.add('selected');
+                // 更新顯示的emoji
+                document.getElementById('selectedEmoji').textContent = option.dataset.emoji;
+            });
+        });
+
+        // 分數滑桿
+        const scoreSlider = document.getElementById('customMoodScore');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        
+        if (scoreSlider && scoreDisplay) {
+            scoreSlider.addEventListener('input', () => {
+                scoreDisplay.textContent = scoreSlider.value;
+            });
+        }
+
+        // 預設選中第一個emoji
+        const firstEmojiOption = document.querySelector('.emoji-option');
+        if (firstEmojiOption) {
+            firstEmojiOption.classList.add('selected');
+        }
+    }
+
+    // 顯示自訂心情表單
+    showCustomMoodForm() {
+        document.getElementById('customMoodForm').style.display = 'block';
+        // 清空表單
+        document.getElementById('customMoodName').value = '';
+        document.getElementById('customMoodScore').value = '0';
+        document.getElementById('scoreDisplay').textContent = '0';
+        // 重置emoji選擇
+        document.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
+        const firstEmojiOption = document.querySelector('.emoji-option');
+        if (firstEmojiOption) {
+            firstEmojiOption.classList.add('selected');
+        }
+        document.getElementById('selectedEmoji').textContent = '😊';
+    }
+
+    // 隱藏自訂心情表單
+    hideCustomMoodForm() {
+        document.getElementById('customMoodForm').style.display = 'none';
+    }
+
+    // 新增自訂心情
+    addCustomMood() {
+        const name = document.getElementById('customMoodName').value.trim();
+        const emoji = document.getElementById('selectedEmoji').textContent;
+        const score = parseInt(document.getElementById('customMoodScore').value);
+
+        // 驗證輸入
+        if (!name) {
+            this.showNotification('請輸入心情名稱', 'error');
+            return;
+        }
+
+        if (name.length > 10) {
+            this.showNotification('心情名稱不能超過10個字', 'error');
+            return;
+        }
+
+        // 檢查是否已存在相同名稱的心情
+        const existingMood = document.querySelector(`[data-mood="${name}"]`);
+        if (existingMood) {
+            this.showNotification('此心情名稱已存在', 'error');
+            return;
+        }
+
+        // 創建新的心情選項
+        const newMoodElement = document.createElement('div');
+        newMoodElement.className = 'mood-item custom-mood-item';
+        newMoodElement.dataset.mood = name;
+        newMoodElement.dataset.score = score;
+        newMoodElement.innerHTML = `
+            <span style="font-size: 2rem;">${emoji}</span>
+            <span>${name}</span>
+            <button class="delete-mood-btn" onclick="moodTracker.deleteCustomMood('${name}')" title="刪除此心情">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        // 添加點擊事件
+        newMoodElement.addEventListener('click', (e) => {
+            // 如果點擊的是刪除按鈕，不觸發選擇
+            if (e.target.closest('.delete-mood-btn')) {
+                return;
+            }
+            this.selectMood(newMoodElement);
+        });
+
+        // 根據分數排序插入到正確位置
+        const moodGrid = document.querySelector('.mood-grid');
+        const moodItems = Array.from(moodGrid.querySelectorAll('.mood-item:not(.custom-mood-btn)'));
+        const customMoodBtn = document.querySelector('.custom-mood-btn');
+        
+        // 找到正確的插入位置
+        let insertBeforeElement = customMoodBtn;
+        for (let i = 0; i < moodItems.length; i++) {
+            const itemScore = parseInt(moodItems[i].dataset.score);
+            if (score > itemScore) {
+                insertBeforeElement = moodItems[i];
+                break;
+            }
+        }
+        
+        // 插入新心情
+        moodGrid.insertBefore(newMoodElement, insertBeforeElement);
+
+        // 儲存自訂心情到本地
+        this.saveCustomMoods();
+
+        // 隱藏表單
+        this.hideCustomMoodForm();
+
+        // 顯示成功訊息
+        this.showNotification(`已新增心情：${name}`, 'success');
+    }
+
+    // 刪除自訂心情
+    deleteCustomMood(moodName) {
+        // 確認刪除
+        if (!confirm(`確定要刪除心情「${moodName}」嗎？`)) {
+            return;
+        }
+
+        // 移除DOM元素
+        const moodElement = document.querySelector(`[data-mood="${moodName}"]`);
+        if (moodElement) {
+            moodElement.remove();
+        }
+
+        // 從本地儲存中移除
+        this.saveCustomMoods();
+
+        // 顯示成功訊息
+        this.showNotification(`已刪除心情：${moodName}`, 'success');
+    }
+
+    // 儲存自訂心情到本地
+    saveCustomMoods() {
+        const customMoods = [];
+        document.querySelectorAll('.mood-item.custom-mood-item').forEach(item => {
+            const emojiSpan = item.querySelector('span');
+            customMoods.push({
+                name: item.dataset.mood,
+                score: parseInt(item.dataset.score),
+                emoji: emojiSpan.textContent
+            });
+        });
+        localStorage.setItem('customMoods', JSON.stringify(customMoods));
+    }
+
+    // 載入自訂心情
+    loadCustomMoods() {
+        const saved = localStorage.getItem('customMoods');
+        const customMoods = saved ? JSON.parse(saved) : [];
+
+        // 重新建立自訂心情元素
+        customMoods.forEach(mood => {
+            const newMoodElement = document.createElement('div');
+            newMoodElement.className = 'mood-item custom-mood-item';
+            newMoodElement.dataset.mood = mood.name;
+            newMoodElement.dataset.score = mood.score;
+            newMoodElement.innerHTML = `
+                <span style="font-size: 2rem;">${mood.emoji}</span>
+                <span>${mood.name}</span>
+                <button class="delete-mood-btn" onclick="moodTracker.deleteCustomMood('${mood.name}')" title="刪除此心情">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // 添加點擊事件
+            newMoodElement.addEventListener('click', (e) => {
+                // 如果點擊的是刪除按鈕，不觸發選擇
+                if (e.target.closest('.delete-mood-btn')) {
+                    return;
+                }
+                this.selectMood(newMoodElement);
+            });
+
+            // 根據分數排序插入到正確位置
+            const moodGrid = document.querySelector('.mood-grid');
+            const moodItems = Array.from(moodGrid.querySelectorAll('.mood-item:not(.custom-mood-btn)'));
+            const customMoodBtn = document.querySelector('.custom-mood-btn');
+            
+            // 找到正確的插入位置
+            let insertBeforeElement = customMoodBtn;
+            for (let i = 0; i < moodItems.length; i++) {
+                const itemScore = parseInt(moodItems[i].dataset.score);
+                if (mood.score > itemScore) {
+                    insertBeforeElement = moodItems[i];
+                    break;
+                }
+            }
+            
+            // 插入自訂心情
+            moodGrid.insertBefore(newMoodElement, insertBeforeElement);
         });
     }
 
@@ -76,7 +287,7 @@ class MoodTracker {
             emoji: this.selectedMood.emoji,
             note: note,
             timestamp: now.toISOString(),
-            date: this.formatDate(now)
+            date: this.formatDate(this.currentDate)
         };
 
         // 添加到心情列表
@@ -442,11 +653,11 @@ class MoodTracker {
         
         let bestWeek = '-';
         let bestScore = -Infinity;
-        Object.entries(weeklyScores).forEach(([weekKey, data]) => {
+        Object.entries(weeklyScores).forEach(([week, data]) => {
             const avg = data.total / data.count;
             if (avg > bestScore) {
                 bestScore = avg;
-                bestWeek = `第${this.getWeekNumber(weekKey)}週`;
+                bestWeek = this.formatDisplayDate(week);
             }
         });
         
