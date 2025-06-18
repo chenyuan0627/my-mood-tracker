@@ -210,6 +210,11 @@
                     <span style="font-size: 2rem;">💀</span>
                     <span>絕望</span>
                 </div>
+                <!-- 自訂心情按鈕 -->
+                <div class="mood-item custom-mood-btn" onclick="moodTracker.showCustomMoodForm()">
+                    <span style="font-size: 2rem;">➕</span>
+                    <span>新增心情</span>
+                </div>
             </div>
 
             <div class="note-section" style="display: none;">
@@ -373,6 +378,101 @@
                 </div>
             </div>
         </section>
+
+        <!-- 自訂心情表單 -->
+        <div id="customMoodForm" class="custom-mood-form" style="display: none;">
+            <h3>新增自訂心情</h3>
+            <div class="form-group">
+                <label for="customMoodName">心情名稱：</label>
+                <input type="text" id="customMoodName" placeholder="輸入心情名稱..." maxlength="10">
+            </div>
+            <div class="form-group">
+                <label for="customMoodEmoji">選擇表情：</label>
+                <div class="emoji-picker">
+                    <button type="button" class="emoji-option" data-emoji="😊">😊</button>
+                    <button type="button" class="emoji-option" data-emoji="😄">😄</button>
+                    <button type="button" class="emoji-option" data-emoji="🥰">🥰</button>
+                    <button type="button" class="emoji-option" data-emoji="😍">😍</button>
+                    <button type="button" class="emoji-option" data-emoji="🤗">🤗</button>
+                    <button type="button" class="emoji-option" data-emoji="😌">😌</button>
+                    <button type="button" class="emoji-option" data-emoji="😎">😎</button>
+                    <button type="button" class="emoji-option" data-emoji="🤩">🤩</button>
+                    <button type="button" class="emoji-option" data-emoji="😇">😇</button>
+                    <button type="button" class="emoji-option" data-emoji="😋">😋</button>
+                    <button type="button" class="emoji-option" data-emoji="😴">😴</button>
+                    <button type="button" class="emoji-option" data-emoji="😐">😐</button>
+                    <button type="button" class="emoji-option" data-emoji="😑">😑</button>
+                    <button type="button" class="emoji-option" data-emoji="😔">😔</button>
+                    <button type="button" class="emoji-option" data-emoji="😞">😞</button>
+                    <button type="button" class="emoji-option" data-emoji="😢">😢</button>
+                    <button type="button" class="emoji-option" data-emoji="😭">😭</button>
+                    <button type="button" class="emoji-option" data-emoji="😤">😤</button>
+                    <button type="button" class="emoji-option" data-emoji="😠">😠</button>
+                    <button type="button" class="emoji-option" data-emoji="😡">😡</button>
+                    <button type="button" class="emoji-option" data-emoji="😨">😨</button>
+                    <button type="button" class="emoji-option" data-emoji="😰">😰</button>
+                    <button type="button" class="emoji-option" data-emoji="😱">😱</button>
+                    <button type="button" class="emoji-option" data-emoji="🤔">🤔</button>
+                    <button type="button" class="emoji-option" data-emoji="😕">😕</button>
+                    <button type="button" class="emoji-option" data-emoji="😟">😟</button>
+                    <button type="button" class="emoji-option" data-emoji="😳">😳</button>
+                    <button type="button" class="emoji-option" data-emoji="😵">😵</button>
+                    <button type="button" class="emoji-option" data-emoji="🥺">🥺</button>
+                    <button type="button" class="emoji-option" data-emoji="😩">😩</button>
+                    <button type="button" class="emoji-option" data-emoji="😫">😫</button>
+                    <button type="button" class="emoji-option" data-emoji="😣">😣</button>
+                    <button type="button" class="emoji-option" data-emoji="😖">😖</button>
+                    <button type="button" class="emoji-option" data-emoji="😒">😒</button>
+                    <button type="button" class="emoji-option" data-emoji="😏">😏</button>
+                    <button type="button" class="emoji-option" data-emoji="🙄">🙄</button>
+                    <button type="button" class="emoji-option" data-emoji="😬">😬</button>
+                    <button type="button" class="emoji-option" data-emoji="🤐">🤐</button>
+                    <button type="button" class="emoji-option" data-emoji="😶">😶</button>
+                    <button type="button" class="emoji-option" data-emoji="😯">😯</button>
+                    <button type="button" class="emoji-option" data-emoji="😦">😦</button>
+                    <button type="button" class="emoji-option" data-emoji="😧">😧</button>
+                    <button type="button" class="emoji-option" data-emoji="😮">😮</button>
+                    <button type="button" class="emoji-option" data-emoji="😲">😲</button>
+                    <button type="button" class="emoji-option" data-emoji="🤤">🤤</button>
+                    <button type="button" class="emoji-option" data-emoji="😪">😪</button>
+                    <button type="button" class="emoji-option" data-emoji="🤢">🤢</button>
+                    <button type="button" class="emoji-option" data-emoji="🤮">🤮</button>
+                    <button type="button" class="emoji-option" data-emoji="🤧">🤧</button>
+                    <button type="button" class="emoji-option" data-emoji="😷">😷</button>
+                    <button type="button" class="emoji-option" data-emoji="🤒">🤒</button>
+                    <button type="button" class="emoji-option" data-emoji="🤕">🤕</button>
+                    <button type="button" class="emoji-option" data-emoji="🤠">🤠</button>
+                    <button type="button" class="emoji-option" data-emoji="🤡">🤡</button>
+                    <button type="button" class="emoji-option" data-emoji="🥳">🥳</button>
+                    <button type="button" class="emoji-option" data-emoji="🥴">🥴</button>
+                    <button type="button" class="emoji-option" data-emoji="🥺">🥺</button>
+                    <button type="button" class="emoji-option" data-emoji="🥵">🥵</button>
+                    <button type="button" class="emoji-option" data-emoji="🥶">🥶</button>
+                    <button type="button" class="emoji-option" data-emoji="🥸">🥸</button>
+                    <button type="button" class="emoji-option" data-emoji="🥰">🥰</button>
+                    <button type="button" class="emoji-option" data-emoji="🥲">🥲</button>
+                    <button type="button" class="emoji-option" data-emoji="🥱">🥱</button>
+                </div>
+                <div class="selected-emoji-display">
+                    <span id="selectedEmoji" style="font-size: 2rem;">😊</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="customMoodScore">心情分數：</label>
+                <div class="score-slider-container">
+                    <input type="range" id="customMoodScore" min="-10" max="10" value="0" class="score-slider">
+                    <span id="scoreDisplay">0</span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="moodTracker.addCustomMood()" class="add-custom-btn">
+                    <i class="fas fa-plus"></i> 新增心情
+                </button>
+                <button type="button" onclick="moodTracker.hideCustomMoodForm()" class="cancel-btn">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
