@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心情記錄器 - 記錄每一天的心情</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>જ⁀➴♡ 茱蒂 <i class="fas fa-heart"></i> 心情記錄器 ^⑉･-･⑉^ ੭</h1>
+            <p>記錄每一天的心情變化，讓生活更有溫度</p>
+        </header>
+
+        <!-- 新增心情區域 -->
+        <section class="add-mood-section">
+            <h2>新增心情</h2>
+            <div class="mood-grid">
+                <div class="mood-item" data-mood="樂觀" data-score="10">
+                    <span style="font-size: 2rem;">😊</span>
+                    <span>樂觀</span>
+                </div>
+                <div class="mood-item" data-mood="積極" data-score="8">
+                    <span style="font-size: 2rem;">💪</span>
+                    <span>積極</span>
+                </div>
+                <div class="mood-item" data-mood="興奮" data-score="6">
+                    <span style="font-size: 2rem;">🎉</span>
+                    <span>興奮</span>
+                </div>
+                <div class="mood-item" data-mood="充實" data-score="5">
+                    <span style="font-size: 2rem;">🌟</span>
+                    <span>充實</span>
+                </div>
+                <div class="mood-item" data-mood="幸福" data-score="5">
+                    <span style="font-size: 2rem;">🥰</span>
+                    <span>幸福</span>
+                </div>
+                <div class="mood-item" data-mood="感動" data-score="4">
+                    <span style="font-size: 2rem;">🥺</span>
+                    <span>感動</span>
+                </div>
+                <div class="mood-item" data-mood="驚喜" data-score="4">
+                    <span style="font-size: 2rem;">😲</span>
+                    <span>驚喜</span>
+                </div>
+                <div class="mood-item" data-mood="活力" data-score="4">
+                    <span style="font-size: 2rem;">💪</span>
+                    <span>活力</span>
+                </div>
+                <div class="mood-item" data-mood="甜蜜" data-score="4">
+                    <span style="font-size: 2rem;">🍯</span>
+                    <span>甜蜜</span>
+                </div>
+                <div class="mood-item" data-mood="自信" data-score="4">
+                    <span style="font-size: 2rem;">😎</span>
+                    <span>自信</span>
+                </div>
+                <div class="mood-item" data-mood="感恩" data-score="5">
+                    <span style="font-size: 2rem;">🙏</span>
+                    <span>感恩</span>
+                </div>
+                <div class="mood-item" data-mood="驕傲" data-score="3">
+                    <span style="font-size: 2rem;">🤴</span>
+                    <span>驕傲</span>
+                </div>
+                <div class="mood-item" data-mood="自豪" data-score="3">
+                    <span style="font-size: 2rem;">🏆</span>
+                    <span>自豪</span>
+                </div>
+                <div class="mood-item" data-mood="心動" data-score="3">
+                    <span style="font-size: 2rem;">💓</span>
+                    <span>心動</span>
+                </div>
+                <div class="mood-item" data-mood="安心" data-score="3">
+                    <span style="font-size: 2rem;">😇</span>
+                    <span>安心</span>
+                </div>
+                <div class="mood-item" data-mood="放鬆" data-score="2">
+                    <span style="font-size: 2rem;">😌</span>
+                    <span>放鬆</span>
+                </div>
+                <div class="mood-item" data-mood="娛樂" data-score="2">
+                    <span style="font-size: 2rem;">🎮</span>
+                    <span>娛樂</span>
+                </div>
+                <div class="mood-item" data-mood="仰慕" data-score="2">
+                    <span style="font-size: 2rem;">😍</span>
+                    <span>仰慕</span>
+                </div>
+                <div class="mood-item" data-mood="專注" data-score="2">
+                    <span style="font-size: 2rem;">🎯</span>
+                    <span>專注</span>
+                </div>
+                <div class="mood-item" data-mood="好奇" data-score="1">
+                    <span style="font-size: 2rem;">🤨</span>
+                    <span>好奇</span>
+                </div>
+                <div class="mood-item" data-mood="靈感" data-score="1">
+                    <span style="font-size: 2rem;">💡</span>
+                    <span>靈感</span>
+                </div>
+                <div class="mood-item" data-mood="觀察" data-score="0">
+                    <span style="font-size: 2rem;">👀</span>
+                    <span>觀察</span>
+                </div>
+                <div class="mood-item" data-mood="困惑" data-score="0">
+                    <span style="font-size: 2rem;">🤔</span>
+                    <span>困惑</span>
+                </div>
+                <div class="mood-item" data-mood="等待" data-score="-1">
+                    <span style="font-size: 2rem;">⏳</span>
+                    <span>等待</span>
+                </div>
+                <div class="mood-item" data-mood="無聊" data-score="-1">
+                    <span style="font-size: 2rem;">😐</span>
+                    <span>無聊</span>
+                </div>
+                <div class="mood-item" data-mood="無奈" data-score="-2">
+                    <span style="font-size: 2rem;">🙄</span>
+                    <span>無奈</span>
+                </div>
+                <div class="mood-item" data-mood="悲觀" data-score="-2">
+                    <span style="font-size: 2rem;">😞</span>
+                    <span>悲觀</span>
+                </div>
+                <div class="mood-item" data-mood="疲憊" data-score="-2">
+                    <span style="font-size: 2rem;">😴</span>
+                    <span>疲憊</span>
+                </div>
+                <div class="mood-item" data-mood="緊張" data-score="-2">
+                    <span style="font-size: 2rem;">😰</span>
+                    <span>緊張</span>
+                </div>
+                <div class="mood-item" data-mood="不耐" data-score="-3">
+                    <span style="font-size: 2rem;">😫</span>
+                    <span>不耐</span>
+                </div>
+                <div class="mood-item" data-mood="壓力" data-score="-3">
+                    <span style="font-size: 2rem;">😮‍💨</span>
+                    <span>壓力</span>
+                </div>
+                <div class="mood-item" data-mood="焦慮" data-score="-3">
+                    <span style="font-size: 2rem;">😟</span>
+                    <span>焦慮</span>
+                </div>
+                <div class="mood-item" data-mood="孤單" data-score="-3">
+                    <span style="font-size: 2rem;">🥺</span>
+                    <span>孤單</span>
+                </div>
+                <div class="mood-item" data-mood="沮喪" data-score="-3">
+                    <span style="font-size: 2rem;">😩</span>
+                    <span>沮喪</span>
+                </div>
+                <div class="mood-item" data-mood="厭倦" data-score="-4">
+                    <span style="font-size: 2rem;">😑</span>
+                    <span>厭倦</span>
+                </div>
+                <div class="mood-item" data-mood="煩躁" data-score="-3">
+                    <span style="font-size: 2rem;">😤</span>
+                    <span>煩躁</span>
+                </div>
+                <div class="mood-item" data-mood="羨慕" data-score="-5">
+                    <span style="font-size: 2rem;">😏</span>
+                    <span>羨慕</span>
+                </div>
+                <div class="mood-item" data-mood="心虛" data-score="-4">
+                    <span style="font-size: 2rem;">😅</span>
+                    <span>心虛</span>
+                </div>
+                <div class="mood-item" data-mood="生氣" data-score="-4">
+                    <span style="font-size: 2rem;">😠</span>
+                    <span>生氣</span>
+                </div>
+                <div class="mood-item" data-mood="失望" data-score="-4">
+                    <span style="font-size: 2rem;">😔</span>
+                    <span>失望</span>
+                </div>
+                <div class="mood-item" data-mood="害怕" data-score="-4">
+                    <span style="font-size: 2rem;">😨</span>
+                    <span>害怕</span>
+                </div>
+                <div class="mood-item" data-mood="自卑" data-score="-6">
+                    <span style="font-size: 2rem;">😢</span>
+                    <span>自卑</span>
+                </div>
+                <div class="mood-item" data-mood="傷心" data-score="-5">
+                    <span style="font-size: 2rem;">💔</span>
+                    <span>傷心</span>
+                </div>
+                <div class="mood-item" data-mood="羞恥" data-score="-7">
+                    <span style="font-size: 2rem;">😳</span>
+                    <span>羞恥</span>
+                </div>
+                <div class="mood-item" data-mood="內疚" data-score="-8">
+                    <span style="font-size: 2rem;">😣</span>
+                    <span>內疚</span>
+                </div>
+                <div class="mood-item" data-mood="嫉妒" data-score="-9">
+                    <span style="font-size: 2rem;">😒</span>
+                    <span>嫉妒</span>
+                </div>
+                <div class="mood-item" data-mood="憂鬱" data-score="-10">
+                    <span style="font-size: 2rem;">😪</span>
+                    <span>憂鬱</span>
+                </div>
+                <div class="mood-item" data-mood="絕望" data-score="-10">
+                    <span style="font-size: 2rem;">💀</span>
+                    <span>絕望</span>
+                </div>
+            </div>
+
+            <div class="note-section" style="display: none;">
+                <h3>補充說明（可選）</h3>
+                <textarea id="moodNote" placeholder="寫下此刻的想法或感受..."></textarea>
+            </div>
+
+            <button id="addMoodBtn" class="add-btn" disabled>
+                <i class="fas fa-plus"></i> 新增心情
+            </button>
+        </section>
+
+        <!-- 日期選擇器 -->
+        <section class="date-selector">
+            <button id="prevDay" class="date-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <h3 id="currentDate">今天</h3>
+            <button id="nextDay" class="date-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </section>
+
+        <!-- 每日統計 -->
+        <section class="daily-stats">
+            <div class="stats-card">
+                <h4>今日心情分數</h4>
+                <div class="score-display">
+                    <span id="dailyScore">0</span>
+                </div>
+                <p id="scoreDescription">尚未記錄心情</p>
+            </div>
+            <div class="stats-card">
+                <h4>記錄次數</h4>
+                <div class="count-display">
+                    <span id="moodCount">0</span>
+                </div>
+                <p>次心情記錄</p>
+            </div>
+        </section>
+
+        <!-- 心情時間軸 -->
+        <section class="timeline-section">
+            <h2>心情時間軸</h2>
+            <div id="moodTimeline" class="timeline">
+                <div class="empty-timeline">
+                    <i class="fas fa-clock"></i>
+                    <p>還沒有心情記錄</p>
+                    <p>選擇上方的心情來開始記錄吧！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 日曆視圖 -->
+        <section class="calendar-section">
+            <h3>日曆視圖</h3>
+            <div class="calendar-controls">
+                <button id="prevMonth" class="calendar-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h4 id="currentMonth">2024年1月</h4>
+                <button id="nextMonth" class="calendar-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="calendar-grid">
+                <div class="calendar-header">
+                    <div>日</div>
+                    <div>一</div>
+                    <div>二</div>
+                    <div>三</div>
+                    <div>四</div>
+                    <div>五</div>
+                    <div>六</div>
+                </div>
+                <div id="calendarDays" class="calendar-days"></div>
+            </div>
+        </section>
+
+        <!-- 統計概覽 -->
+        <section class="stats-overview">
+            <div class="stats-tabs">
+                <button class="tab-btn active" data-tab="weekly">週度統計</button>
+                <button class="tab-btn" data-tab="monthly">月份統計</button>
+            </div>
+            <div class="stats-content">
+                <div id="weeklyStats" class="tab-content active">
+                    <h4>本週心情趨勢</h4>
+                    <div class="weekly-chart">
+                        <div id="weeklyChart" class="chart-container"></div>
+                    </div>
+                    <div class="weekly-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">本週平均分數</span>
+                            <span id="weeklyAvgScore" class="summary-value">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">本週記錄次數</span>
+                            <span id="weeklyTotalCount" class="summary-value">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">最佳心情日</span>
+                            <span id="weeklyBestDay" class="summary-value">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="monthlyStats" class="tab-content">
+                    <h4>本月心情趨勢</h4>
+                    <div class="monthly-chart">
+                        <div id="monthlyChart" class="chart-container"></div>
+                    </div>
+                    <div class="monthly-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">本月平均分數</span>
+                            <span id="monthlyAvgScore" class="summary-value">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">本月記錄次數</span>
+                            <span id="monthlyTotalCount" class="summary-value">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">最佳心情週</span>
+                            <span id="monthlyBestWeek" class="summary-value">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 資料備份還原區塊 -->
+        <section class="backup-section">
+            <h3>資料備份還原</h3>
+            <div class="backup-controls">
+                <button onclick="moodTracker.exportData()" class="backup-btn">
+                    <i class="fas fa-download"></i> 備份資料
+                </button>
+                <button onclick="moodTracker.importData()" class="backup-btn">
+                    <i class="fas fa-upload"></i> 還原資料
+                </button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+            </div>
+        </section>
+
+        <!-- 歷史記錄列表 -->
+        <section class="history-section">
+            <h3>歷史記錄</h3>
+            <div class="history-controls">
+                <input type="text" id="historySearch" placeholder="搜尋日期或心情..." class="search-input">
+                <select id="historyFilter" class="filter-select">
+                    <option value="all">全部記錄</option>
+                    <option value="positive">正面情緒</option>
+                    <option value="negative">負面情緒</option>
+                    <option value="neutral">中性情緒</option>
+                </select>
+            </div>
+            <div id="historyList" class="history-list">
+                <div class="empty-history">
+                    <i class="fas fa-history"></i>
+                    <p>還沒有歷史記錄</p>
+                    <p>開始記錄心情來建立您的歷史吧！</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
