@@ -1,884 +1,1132 @@
-class MoodTracker {
-    constructor() {
-        this.moods = [];
-        this.currentDate = new Date();
-        this.selectedMood = null;
-        this.init();
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #FFB3BA 0%, #FFDFBA 25%, #FFFFBA 50%, #BAFFC9 75%, #BAE1FF 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #8B5A8B;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(139, 90, 139, 0.2);
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #9B6B9B;
+}
+
+/* 新增心情區域 */
+.add-mood-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+}
+
+.add-mood-section h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #8B5A8B;
+    font-size: 1.5rem;
+}
+
+.mood-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.mood-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    background: #FFF8DC;
+    position: relative;
+}
+
+.mood-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 179, 186, 0.3);
+}
+
+.mood-item.selected {
+    border-color: #FFB3BA;
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    color: white;
+    transform: scale(1.05);
+}
+
+.mood-item i {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.mood-item span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* 便條區域 */
+.note-section {
+    margin-bottom: 20px;
+}
+
+.note-section h3 {
+    color: #8B5A8B;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+#moodNote {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    border: 2px solid #FFE4E1;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+    background: #FFF8DC;
+}
+
+#moodNote:focus {
+    outline: none;
+    border-color: #FFB3BA;
+}
+
+/* 新增按鈕 */
+.add-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.add-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 179, 186, 0.4);
+}
+
+.add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 日期選擇器 */
+.date-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.date-btn {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+}
+
+.date-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(255, 179, 186, 0.3);
+}
+
+.date-btn i {
+    color: #FFB3BA;
+    font-size: 1.2rem;
+}
+
+#currentDate {
+    color: #8B5A8B;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(139, 90, 139, 0.2);
+}
+
+/* 每日統計 */
+.daily-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stats-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+    transition: transform 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-card h4 {
+    color: #8B5A8B;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.score-display, .count-display {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.score-display span {
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.count-display span {
+    color: #FFB3BA;
+}
+
+.stats-card p {
+    color: #9B6B9B;
+    font-size: 0.9rem;
+}
+
+/* 時間軸 */
+.timeline-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+}
+
+.timeline-section h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #8B5A8B;
+    font-size: 1.5rem;
+}
+
+.timeline {
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #FFB3BA, #FFC0CB);
+}
+
+.empty-timeline {
+    text-align: center;
+    padding: 60px 20px;
+    color: #9B6B9B;
+}
+
+.empty-timeline i {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-timeline p {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.empty-timeline p:last-child {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* 心情記錄項目 */
+.mood-entry {
+    position: relative;
+    margin-bottom: 30px;
+    padding-left: 80px;
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
     }
-
-    init() {
-        this.loadMoods();
-        this.setupEventListeners();
-        this.loadCustomMoods();
-        this.updateUI();
-    }
-
-    setupEventListeners() {
-        // 心情選擇
-        document.querySelectorAll('.mood-item').forEach(item => {
-            item.addEventListener('click', () => this.selectMood(item));
-        });
-
-        // 新增心情按鈕
-        document.getElementById('addMoodBtn').addEventListener('click', () => this.addMood());
-
-        // 日期導航
-        document.getElementById('prevDay').addEventListener('click', () => this.changeDate(-1));
-        document.getElementById('nextDay').addEventListener('click', () => this.changeDate(1));
-
-        // 日曆控制
-        document.getElementById('prevMonth').addEventListener('click', () => this.changeMonth(-1));
-        document.getElementById('nextMonth').addEventListener('click', () => this.changeMonth(1));
-
-        // 統計標籤切換
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
-        });
-
-        // 歷史記錄搜尋和篩選
-        document.getElementById('historySearch').addEventListener('input', () => this.filterHistory());
-        document.getElementById('historyFilter').addEventListener('change', () => this.filterHistory());
-
-        // 檔案輸入事件監聽器
-        document.getElementById('importFile').addEventListener('change', (e) => {
-            this.handleFileImport(e);
-        });
-
-        // 自訂心情相關事件監聽器
-        this.setupCustomMoodListeners();
-    }
-
-    setupCustomMoodListeners() {
-        // Emoji選擇器
-        document.querySelectorAll('.emoji-option').forEach(option => {
-            option.addEventListener('click', () => {
-                // 移除其他選中的emoji
-                document.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
-                // 選中當前emoji
-                option.classList.add('selected');
-                // 更新顯示的emoji
-                document.getElementById('selectedEmoji').textContent = option.dataset.emoji;
-            });
-        });
-
-        // 分數滑桿
-        const scoreSlider = document.getElementById('customMoodScore');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        
-        if (scoreSlider && scoreDisplay) {
-            scoreSlider.addEventListener('input', () => {
-                scoreDisplay.textContent = scoreSlider.value;
-            });
-        }
-
-        // 預設選中第一個emoji
-        const firstEmojiOption = document.querySelector('.emoji-option');
-        if (firstEmojiOption) {
-            firstEmojiOption.classList.add('selected');
-        }
-    }
-
-    // 顯示自訂心情表單
-    showCustomMoodForm() {
-        document.getElementById('customMoodForm').style.display = 'block';
-        // 清空表單
-        document.getElementById('customMoodName').value = '';
-        document.getElementById('customMoodScore').value = '0';
-        document.getElementById('scoreDisplay').textContent = '0';
-        // 重置emoji選擇
-        document.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
-        const firstEmojiOption = document.querySelector('.emoji-option');
-        if (firstEmojiOption) {
-            firstEmojiOption.classList.add('selected');
-        }
-        document.getElementById('selectedEmoji').textContent = '😊';
-    }
-
-    // 隱藏自訂心情表單
-    hideCustomMoodForm() {
-        document.getElementById('customMoodForm').style.display = 'none';
-    }
-
-    // 新增自訂心情
-    addCustomMood() {
-        const name = document.getElementById('customMoodName').value.trim();
-        const emoji = document.getElementById('selectedEmoji').textContent;
-        const score = parseInt(document.getElementById('customMoodScore').value);
-
-        // 驗證輸入
-        if (!name) {
-            this.showNotification('請輸入心情名稱', 'error');
-            return;
-        }
-
-        if (name.length > 10) {
-            this.showNotification('心情名稱不能超過10個字', 'error');
-            return;
-        }
-
-        // 檢查是否已存在相同名稱的心情
-        const existingMood = document.querySelector(`[data-mood="${name}"]`);
-        if (existingMood) {
-            this.showNotification('此心情名稱已存在', 'error');
-            return;
-        }
-
-        // 創建新的心情選項
-        const newMoodElement = document.createElement('div');
-        newMoodElement.className = 'mood-item custom-mood-item';
-        newMoodElement.dataset.mood = name;
-        newMoodElement.dataset.score = score;
-        newMoodElement.innerHTML = `
-            <span style="font-size: 2rem;">${emoji}</span>
-            <span>${name}</span>
-            <button class="delete-mood-btn" onclick="moodTracker.deleteCustomMood('${name}')" title="刪除此心情">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-
-        // 添加點擊事件
-        newMoodElement.addEventListener('click', (e) => {
-            // 如果點擊的是刪除按鈕，不觸發選擇
-            if (e.target.closest('.delete-mood-btn')) {
-                return;
-            }
-            this.selectMood(newMoodElement);
-        });
-
-        // 根據分數排序插入到正確位置
-        const moodGrid = document.querySelector('.mood-grid');
-        const moodItems = Array.from(moodGrid.querySelectorAll('.mood-item:not(.custom-mood-btn)'));
-        const customMoodBtn = document.querySelector('.custom-mood-btn');
-        
-        // 找到正確的插入位置
-        let insertBeforeElement = customMoodBtn;
-        for (let i = 0; i < moodItems.length; i++) {
-            const itemScore = parseInt(moodItems[i].dataset.score);
-            if (score > itemScore) {
-                insertBeforeElement = moodItems[i];
-                break;
-            }
-        }
-        
-        // 插入新心情
-        moodGrid.insertBefore(newMoodElement, insertBeforeElement);
-
-        // 儲存自訂心情到本地
-        this.saveCustomMoods();
-
-        // 隱藏表單
-        this.hideCustomMoodForm();
-
-        // 顯示成功訊息
-        this.showNotification(`已新增心情：${name}`, 'success');
-    }
-
-    // 刪除自訂心情
-    deleteCustomMood(moodName) {
-        // 確認刪除
-        if (!confirm(`確定要刪除心情「${moodName}」嗎？`)) {
-            return;
-        }
-
-        // 移除DOM元素
-        const moodElement = document.querySelector(`[data-mood="${moodName}"]`);
-        if (moodElement) {
-            moodElement.remove();
-        }
-
-        // 從本地儲存中移除
-        this.saveCustomMoods();
-
-        // 顯示成功訊息
-        this.showNotification(`已刪除心情：${moodName}`, 'success');
-    }
-
-    // 儲存自訂心情到本地
-    saveCustomMoods() {
-        const customMoods = [];
-        document.querySelectorAll('.mood-item.custom-mood-item').forEach(item => {
-            const emojiSpan = item.querySelector('span');
-            customMoods.push({
-                name: item.dataset.mood,
-                score: parseInt(item.dataset.score),
-                emoji: emojiSpan.textContent
-            });
-        });
-        localStorage.setItem('customMoods', JSON.stringify(customMoods));
-        console.log('自訂心情已儲存:', customMoods.length, '個');
-    }
-
-    // 載入自訂心情
-    loadCustomMoods() {
-        const saved = localStorage.getItem('customMoods');
-        const customMoods = saved ? JSON.parse(saved) : [];
-        console.log('自訂心情已載入:', customMoods.length, '個');
-
-        // 重新建立自訂心情元素
-        customMoods.forEach(mood => {
-            const newMoodElement = document.createElement('div');
-            newMoodElement.className = 'mood-item custom-mood-item';
-            newMoodElement.dataset.mood = mood.name;
-            newMoodElement.dataset.score = mood.score;
-            newMoodElement.innerHTML = `
-                <span style="font-size: 2rem;">${mood.emoji}</span>
-                <span>${mood.name}</span>
-                <button class="delete-mood-btn" onclick="moodTracker.deleteCustomMood('${mood.name}')" title="刪除此心情">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-
-            // 添加點擊事件
-            newMoodElement.addEventListener('click', (e) => {
-                // 如果點擊的是刪除按鈕，不觸發選擇
-                if (e.target.closest('.delete-mood-btn')) {
-                    return;
-                }
-                this.selectMood(newMoodElement);
-            });
-
-            // 根據分數排序插入到正確位置
-            const moodGrid = document.querySelector('.mood-grid');
-            const moodItems = Array.from(moodGrid.querySelectorAll('.mood-item:not(.custom-mood-btn)'));
-            const customMoodBtn = document.querySelector('.custom-mood-btn');
-            
-            // 找到正確的插入位置
-            let insertBeforeElement = customMoodBtn;
-            for (let i = 0; i < moodItems.length; i++) {
-                const itemScore = parseInt(moodItems[i].dataset.score);
-                if (mood.score > itemScore) {
-                    insertBeforeElement = moodItems[i];
-                    break;
-                }
-            }
-            
-            // 插入自訂心情
-            moodGrid.insertBefore(newMoodElement, insertBeforeElement);
-        });
-    }
-
-    selectMood(item) {
-        // 移除之前的選擇
-        document.querySelectorAll('.mood-item').forEach(i => i.classList.remove('selected'));
-        
-        // 選擇新的心情
-        item.classList.add('selected');
-        this.selectedMood = {
-            name: item.dataset.mood,
-            score: parseInt(item.dataset.score),
-            emoji: item.querySelector('span').textContent
-        };
-
-        // 顯示便條區域
-        document.querySelector('.note-section').style.display = 'block';
-
-        // 啟用新增按鈕
-        document.getElementById('addMoodBtn').disabled = false;
-    }
-
-    addMood() {
-        if (!this.selectedMood) return;
-
-        const note = document.getElementById('moodNote').value.trim();
-        const now = new Date();
-        
-        const moodEntry = {
-            id: Date.now(),
-            name: this.selectedMood.name,
-            score: this.selectedMood.score,
-            emoji: this.selectedMood.emoji,
-            note: note,
-            timestamp: now.toISOString(),
-            date: this.formatDate(this.currentDate)
-        };
-
-        console.log('新增心情記錄:', moodEntry);
-
-        // 添加到心情列表
-        this.moods.push(moodEntry);
-        
-        // 儲存到本地
-        this.saveMoods();
-        
-        // 重置選擇
-        this.resetSelection();
-        
-        // 更新UI
-        this.updateUI();
-        
-        // 顯示成功訊息
-        this.showNotification('心情記錄成功！', 'success');
-    }
-
-    resetSelection() {
-        document.querySelectorAll('.mood-item').forEach(item => item.classList.remove('selected'));
-        document.getElementById('moodNote').value = '';
-        document.querySelector('.note-section').style.display = 'none';
-        document.getElementById('addMoodBtn').disabled = true;
-        this.selectedMood = null;
-    }
-
-    changeDate(direction) {
-        this.currentDate.setDate(this.currentDate.getDate() + direction);
-        this.updateUI();
-    }
-
-    formatDate(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    formatTime(date) {
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${hours}:${minutes}`;
-    }
-
-    getCurrentDateString() {
-        const today = new Date();
-        const currentDate = new Date(this.currentDate);
-        
-        if (this.formatDate(today) === this.formatDate(currentDate)) {
-            return '今天';
-        } else if (this.formatDate(new Date(today.getTime() - 24 * 60 * 60 * 1000)) === this.formatDate(currentDate)) {
-            return '昨天';
-        } else if (this.formatDate(new Date(today.getTime() + 24 * 60 * 60 * 1000)) === this.formatDate(currentDate)) {
-            return '明天';
-        } else {
-            return currentDate.toLocaleDateString('zh-TW', {
-                month: 'long',
-                day: 'numeric',
-                weekday: 'long'
-            });
-        }
-    }
-
-    getMoodsForCurrentDate() {
-        const currentDateStr = this.formatDate(this.currentDate);
-        const filteredMoods = this.moods.filter(mood => mood.date === currentDateStr);
-        console.log('當前日期:', currentDateStr, '找到心情記錄:', filteredMoods.length, '筆');
-        return filteredMoods;
-    }
-
-    updateUI() {
-        this.updateDateDisplay();
-        this.updateTimeline();
-        this.updateStats();
-        this.updateCalendar();
-        this.updateStatsOverview();
-        this.updateHistoryList();
-    }
-
-    updateDateDisplay() {
-        document.getElementById('currentDate').textContent = this.getCurrentDateString();
-    }
-
-    updateTimeline() {
-        const timeline = document.getElementById('moodTimeline');
-        const currentMoods = this.getMoodsForCurrentDate();
-
-        if (currentMoods.length === 0) {
-            timeline.innerHTML = `
-                <div class="empty-timeline">
-                    <i class="fas fa-clock"></i>
-                    <p>還沒有心情記錄</p>
-                    <p>選擇上方的心情來開始記錄吧！</p>
-                </div>
-            `;
-            return;
-        }
-
-        // 按時間排序（最新的在前）
-        currentMoods.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        timeline.innerHTML = currentMoods.map(mood => this.createMoodEntryHTML(mood)).join('');
-    }
-
-    createMoodEntryHTML(mood) {
-        const date = new Date(mood.timestamp);
-        const timeStr = this.formatTime(date);
-        const scoreText = mood.score > 0 ? `+${mood.score}` : mood.score;
-        
-        return `
-            <div class="mood-entry" data-mood-id="${mood.id}">
-                <div class="mood-entry-content">
-                    <div class="mood-entry-header">
-                        <div class="mood-info">
-                            <span class="mood-emoji" style="font-size: 1.5rem;">${mood.emoji}</span>
-                            <span class="mood-name">${mood.name}</span>
-                        </div>
-                        <div class="mood-actions">
-                            <div class="mood-time">${timeStr}</div>
-                            <button class="delete-btn" onclick="moodTracker.deleteMood(${mood.id})" title="刪除此記錄">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mood-score">${scoreText}</div>
-                    ${mood.note ? `<div class="mood-note">${mood.note}</div>` : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    updateStats() {
-        const currentMoods = this.getMoodsForCurrentDate();
-        const totalScore = currentMoods.reduce((sum, mood) => sum + mood.score, 0);
-        const count = currentMoods.length;
-
-        // 更新分數顯示
-        document.getElementById('dailyScore').textContent = totalScore;
-        document.getElementById('moodCount').textContent = count;
-
-        // 更新分數描述
-        const scoreDescription = this.getScoreDescription(totalScore, count);
-        document.getElementById('scoreDescription').textContent = scoreDescription;
-    }
-
-    getScoreDescription(score, count) {
-        if (count === 0) return '尚未記錄心情';
-        
-        if (score >= 10) return '今天心情超棒！';
-        if (score >= 5) return '今天心情不錯';
-        if (score >= 0) return '今天心情平穩';
-        if (score >= -5) return '今天心情有點低落';
-        return '今天心情不太好，要加油喔！';
-    }
-
-    saveMoods() {
-        localStorage.setItem('moodTracker', JSON.stringify(this.moods));
-        console.log('心情資料已儲存:', this.moods.length, '筆記錄');
-    }
-
-    loadMoods() {
-        const saved = localStorage.getItem('moodTracker');
-        this.moods = saved ? JSON.parse(saved) : [];
-        console.log('心情資料已載入:', this.moods.length, '筆記錄');
-    }
-
-    showNotification(message, type = 'info') {
-        // 創建通知元素
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#48bb78' : type === 'error' ? '#f56565' : '#4299e1'};
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            font-weight: 500;
-        `;
-        notification.textContent = message;
-
-        document.body.appendChild(notification);
-
-        // 顯示動畫
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 100);
-
-        // 自動移除
-        setTimeout(() => {
-            notification.style.transform = 'translateX(100%)';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
-    }
-
-    deleteMood(moodId) {
-        // 確認刪除
-        if (!confirm('確定要刪除此心情記錄嗎？')) {
-            return;
-        }
-
-        // 從陣列中移除
-        this.moods = this.moods.filter(mood => mood.id !== moodId);
-        
-        // 儲存到本地
-        this.saveMoods();
-        
-        // 更新UI
-        this.updateUI();
-        
-        // 顯示成功訊息
-        this.showNotification('心情記錄已刪除', 'success');
-    }
-
-    // 日曆視圖功能
-    changeMonth(direction) {
-        this.currentDate.setMonth(this.currentDate.getMonth() + direction);
-        this.updateCalendar();
-    }
-
-    updateCalendar() {
-        const year = this.currentDate.getFullYear();
-        const month = this.currentDate.getMonth();
-        
-        // 更新月份顯示
-        document.getElementById('currentMonth').textContent = 
-            `${year}年${month + 1}月`;
-        
-        // 生成日曆
-        this.generateCalendarDays(year, month);
-    }
-
-    generateCalendarDays(year, month) {
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const startDate = new Date(firstDay);
-        startDate.setDate(startDate.getDate() - firstDay.getDay());
-        
-        const calendarDays = document.getElementById('calendarDays');
-        calendarDays.innerHTML = '';
-        
-        const today = new Date();
-        const todayYear = today.getFullYear();
-        const todayMonth = today.getMonth();
-        const todayDay = today.getDate();
-        
-        for (let i = 0; i < 42; i++) {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + i);
-            
-            const dayElement = document.createElement('div');
-            dayElement.className = 'calendar-day';
-            
-            if (currentDate.getMonth() !== month) {
-                dayElement.classList.add('other-month');
-            }
-            
-            if (currentDate.getFullYear() === todayYear && 
-                currentDate.getMonth() === todayMonth && 
-                currentDate.getDate() === todayDay) {
-                dayElement.classList.add('today');
-            }
-            
-            const dateString = this.formatDate(currentDate);
-            const dayMoods = this.moods.filter(mood => mood.date === dateString);
-            
-            if (dayMoods.length > 0) {
-                dayElement.classList.add('has-mood');
-            }
-            
-            dayElement.textContent = currentDate.getDate();
-            
-            dayElement.addEventListener('click', () => {
-                this.currentDate = new Date(currentDate);
-                this.updateUI();
-            });
-            
-            calendarDays.appendChild(dayElement);
-        }
-    }
-
-    // 統計概覽功能
-    switchTab(tabName) {
-        // 更新標籤狀態
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        
-        // 更新內容
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        document.getElementById(`${tabName}Stats`).classList.add('active');
-        
-        this.updateStatsOverview();
-    }
-
-    updateStatsOverview() {
-        this.updateWeeklyStats();
-        this.updateMonthlyStats();
-    }
-
-    updateWeeklyStats() {
-        const today = new Date();
-        const weekStart = new Date(today);
-        weekStart.setDate(today.getDate() - today.getDay());
-        
-        const weeklyMoods = this.getMoodsInDateRange(weekStart, today);
-        const totalScore = weeklyMoods.reduce((sum, mood) => sum + mood.score, 0);
-        const avgScore = weeklyMoods.length > 0 ? (totalScore / weeklyMoods.length).toFixed(1) : 0;
-        
-        // 找出最佳心情日
-        const dailyScores = {};
-        weeklyMoods.forEach(mood => {
-            if (!dailyScores[mood.date]) {
-                dailyScores[mood.date] = { total: 0, count: 0 };
-            }
-            dailyScores[mood.date].total += mood.score;
-            dailyScores[mood.date].count++;
-        });
-        
-        let bestDay = '-';
-        let bestScore = -Infinity;
-        Object.entries(dailyScores).forEach(([date, data]) => {
-            const avg = data.total / data.count;
-            if (avg > bestScore) {
-                bestScore = avg;
-                bestDay = this.formatDisplayDate(date);
-            }
-        });
-        
-        document.getElementById('weeklyAvgScore').textContent = avgScore;
-        document.getElementById('weeklyTotalCount').textContent = weeklyMoods.length;
-        document.getElementById('weeklyBestDay').textContent = bestDay;
-    }
-
-    updateMonthlyStats() {
-        const today = new Date();
-        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        
-        const monthlyMoods = this.getMoodsInDateRange(monthStart, today);
-        const totalScore = monthlyMoods.reduce((sum, mood) => sum + mood.score, 0);
-        const avgScore = monthlyMoods.length > 0 ? (totalScore / monthlyMoods.length).toFixed(1) : 0;
-        
-        // 找出最佳心情週
-        const weeklyScores = {};
-        monthlyMoods.forEach(mood => {
-            const moodDate = new Date(mood.date);
-            const weekStart = new Date(moodDate);
-            weekStart.setDate(moodDate.getDate() - moodDate.getDay());
-            const weekKey = this.formatDate(weekStart);
-            
-            if (!weeklyScores[weekKey]) {
-                weeklyScores[weekKey] = { total: 0, count: 0 };
-            }
-            weeklyScores[weekKey].total += mood.score;
-            weeklyScores[weekKey].count++;
-        });
-        
-        let bestWeek = '-';
-        let bestScore = -Infinity;
-        Object.entries(weeklyScores).forEach(([weekKey, data]) => {
-            const avg = data.total / data.count;
-            if (avg > bestScore) {
-                bestScore = avg;
-                bestWeek = `第${this.getWeekNumber(weekKey)}週`;
-            }
-        });
-        
-        document.getElementById('monthlyAvgScore').textContent = avgScore;
-        document.getElementById('monthlyTotalCount').textContent = monthlyMoods.length;
-        document.getElementById('monthlyBestWeek').textContent = bestWeek;
-    }
-
-    getMoodsInDateRange(startDate, endDate) {
-        return this.moods.filter(mood => {
-            const moodDate = new Date(mood.date);
-            return moodDate >= startDate && moodDate <= endDate;
-        });
-    }
-
-    formatDisplayDate(dateStr) {
-        const date = new Date(dateStr);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        return `${month}/${day}`;
-    }
-
-    getWeekNumber(dateStr) {
-        const date = new Date(dateStr);
-        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-        const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
-        return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-    }
-
-    // 歷史記錄列表功能
-    updateHistoryList() {
-        const historyList = document.getElementById('historyList');
-        
-        if (this.moods.length === 0) {
-            historyList.innerHTML = `
-                <div class="empty-history">
-                    <i class="fas fa-history"></i>
-                    <p>還沒有歷史記錄</p>
-                    <p>開始記錄心情來建立您的歷史吧！</p>
-                </div>
-            `;
-            return;
-        }
-        
-        // 按日期分組
-        const groupedMoods = {};
-        this.moods.forEach(mood => {
-            if (!groupedMoods[mood.date]) {
-                groupedMoods[mood.date] = [];
-            }
-            groupedMoods[mood.date].push(mood);
-        });
-        
-        // 生成歷史記錄項目
-        const historyItems = Object.entries(groupedMoods)
-            .sort(([a], [b]) => new Date(b) - new Date(a))
-            .map(([date, moods]) => this.createHistoryItemHTML(date, moods))
-            .join('');
-        
-        historyList.innerHTML = historyItems;
-        
-        // 添加點擊事件
-        historyList.querySelectorAll('.history-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const date = item.dataset.date;
-                this.currentDate = new Date(date);
-                this.updateUI();
-            });
-        });
-    }
-
-    createHistoryItemHTML(date, moods) {
-        const totalScore = moods.reduce((sum, mood) => sum + mood.score, 0);
-        const avgScore = (totalScore / moods.length).toFixed(1);
-        const displayDate = this.formatDisplayDate(date);
-        
-        // 找出主要情緒
-        const moodCounts = {};
-        moods.forEach(mood => {
-            moodCounts[mood.name] = (moodCounts[mood.name] || 0) + 1;
-        });
-        const mainMood = Object.entries(moodCounts)
-            .sort(([,a], [,b]) => b - a)[0][0];
-        
-        return `
-            <div class="history-item" data-date="${date}">
-                <div class="history-item-header">
-                    <span class="history-date">${displayDate}</span>
-                    <span class="history-count">${moods.length} 筆記錄</span>
-                </div>
-                <div class="history-summary">
-                    平均分數: ${avgScore} | 主要情緒: ${mainMood}
-                </div>
-            </div>
-        `;
-    }
-
-    filterHistory() {
-        const searchTerm = document.getElementById('historySearch').value.toLowerCase();
-        const filterType = document.getElementById('historyFilter').value;
-        
-        const historyItems = document.querySelectorAll('.history-item');
-        
-        historyItems.forEach(item => {
-            const date = item.dataset.date;
-            const moods = this.moods.filter(mood => mood.date === date);
-            
-            // 搜尋篩選
-            const matchesSearch = searchTerm === '' || 
-                date.includes(searchTerm) || 
-                moods.some(mood => mood.name.toLowerCase().includes(searchTerm));
-            
-            // 情緒類型篩選
-            let matchesFilter = true;
-            if (filterType !== 'all') {
-                const hasMatchingMood = moods.some(mood => {
-                    if (filterType === 'positive') return mood.score > 0;
-                    if (filterType === 'negative') return mood.score < 0;
-                    if (filterType === 'neutral') return mood.score === 0;
-                    return true;
-                });
-                matchesFilter = hasMatchingMood;
-            }
-            
-            item.style.display = (matchesSearch && matchesFilter) ? 'block' : 'none';
-        });
-    }
-
-    // 備份資料功能
-    exportData() {
-        const data = {
-            moods: this.moods,
-            exportDate: new Date().toISOString(),
-            version: '1.0'
-        };
-        
-        const dataStr = JSON.stringify(data, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        
-        const url = URL.createObjectURL(dataBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `mood-tracker-backup-${new Date().toISOString().split('T')[0]}.json`;
-        
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        URL.revokeObjectURL(url);
-        
-        this.showNotification('資料備份成功！', 'success');
-    }
-
-    // 還原資料功能
-    importData() {
-        const fileInput = document.getElementById('importFile');
-        fileInput.click();
-    }
-
-    // 處理檔案匯入
-    handleFileImport(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        // 檢查檔案類型
-        if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
-            this.showNotification('請選擇有效的JSON檔案', 'error');
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const data = JSON.parse(event.target.result);
-                
-                // 驗證資料格式
-                if (!data.moods || !Array.isArray(data.moods)) {
-                    this.showNotification('檔案格式不正確', 'error');
-                    return;
-                }
-                
-                // 確認是否要覆蓋現有資料
-                if (this.moods.length > 0) {
-                    if (!confirm('還原資料將會覆蓋現有的心情記錄，確定要繼續嗎？')) {
-                        return;
-                    }
-                }
-                
-                // 匯入資料
-                this.moods = data.moods;
-                this.saveMoods();
-                this.updateUI();
-                
-                // 清空檔案輸入
-                e.target.value = '';
-                
-                this.showNotification('資料還原成功！', 'success');
-                
-            } catch (error) {
-                console.error('解析檔案時發生錯誤:', error);
-                this.showNotification('檔案解析失敗，請檢查檔案格式', 'error');
-            }
-        };
-        
-        reader.onerror = () => {
-            this.showNotification('讀取檔案時發生錯誤', 'error');
-        };
-        
-        reader.readAsText(file);
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
-// 初始化應用程式
-document.addEventListener('DOMContentLoaded', () => {
-    window.moodTracker = new MoodTracker();
-}); 
+.mood-entry::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #FFB3BA;
+    z-index: 1;
+}
+
+.mood-entry-content {
+    background: #FFF8DC;
+    border-radius: 15px;
+    padding: 20px;
+    border-left: 4px solid #FFB3BA;
+    transition: all 0.3s ease;
+}
+
+.mood-entry-content:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(255, 179, 186, 0.2);
+}
+
+.mood-entry-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.mood-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mood-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mood-emoji {
+    font-size: 1.5rem;
+}
+
+.mood-name {
+    font-weight: 600;
+    color: #8B5A8B;
+}
+
+.mood-time {
+    color: #9B6B9B;
+    font-size: 0.9rem;
+}
+
+.delete-btn {
+    background: #FFB3BA;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.delete-btn:hover {
+    background: #FF8FA3;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(255, 179, 186, 0.4);
+}
+
+.mood-score {
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.mood-note {
+    margin-top: 10px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    border-left: 3px solid #FFE4E1;
+    font-style: italic;
+    color: #8B5A8B;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .mood-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    
+    .mood-item {
+        padding: 12px 8px;
+    }
+    
+    .mood-item i {
+        font-size: 1.5rem;
+    }
+    
+    .mood-item span {
+        font-size: 0.8rem;
+    }
+    
+    .daily-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .mood-entry {
+        padding-left: 60px;
+    }
+    
+    .mood-entry::before {
+        left: 15px;
+        width: 15px;
+        height: 15px;
+    }
+}
+
+/* 日曆視圖 */
+.calendar-section {
+    background: white;
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+}
+
+.calendar-section h3 {
+    text-align: center;
+    margin-bottom: 12px;
+    color: #8B5A8B;
+    font-size: 1.2rem;
+}
+
+.calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 12px;
+}
+
+.calendar-btn {
+    background: #FFB3BA;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calendar-btn:hover {
+    background: #FF8FA3;
+    transform: scale(1.1);
+}
+
+#currentMonth {
+    color: #8B5A8B;
+    font-size: 1.1rem;
+    font-weight: 600;
+    min-width: 120px;
+    text-align: center;
+}
+
+.calendar-grid {
+    border: 1px solid #FFE4E1;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #FFF8DC;
+    border-bottom: 1px solid #FFE4E1;
+}
+
+.calendar-header div {
+    padding: 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #8B5A8B;
+    font-size: 0.85rem;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #FFE4E1;
+}
+
+.calendar-day {
+    min-height: 32px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    font-size: 0.85rem;
+    color: #8B5A8B;
+}
+
+.calendar-day:hover {
+    background: #FFF8DC;
+}
+
+.calendar-day.has-mood {
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    color: white;
+    font-weight: 600;
+}
+
+.calendar-day.has-mood:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(255, 179, 186, 0.3);
+}
+
+.calendar-day.other-month {
+    color: #9B6B9B;
+    background: #FFF8DC;
+}
+
+.calendar-day.today {
+    border: 2px solid #FFB3BA;
+    font-weight: 600;
+}
+
+/* 統計概覽 */
+.stats-overview {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+}
+
+.stats-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #FFE4E1;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9B6B9B;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #FFB3BA;
+    border-bottom-color: #FFB3BA;
+}
+
+.tab-btn:hover {
+    color: #FFB3BA;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #8B5A8B;
+    font-size: 1.2rem;
+}
+
+.chart-container {
+    height: 200px;
+    background: #FFF8DC;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: #9B6B9B;
+    font-size: 1.1rem;
+}
+
+.weekly-summary, .monthly-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.summary-item {
+    background: #FFF8DC;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.summary-label {
+    display: block;
+    color: #9B6B9B;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.summary-value {
+    display: block;
+    color: #8B5A8B;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* 資料備份還原 */
+.backup-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+}
+
+.backup-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #8B5A8B;
+    font-size: 1.3rem;
+}
+
+.backup-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.backup-btn {
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.backup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 179, 186, 0.4);
+    background: linear-gradient(135deg, #FF8FA3, #FFB3BA);
+}
+
+.backup-btn i {
+    font-size: 1.1rem;
+}
+
+/* 歷史記錄列表 */
+.history-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(255, 179, 186, 0.2);
+    border: 2px solid #FFE4E1;
+}
+
+.history-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #8B5A8B;
+    font-size: 1.3rem;
+}
+
+.history-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.search-input, .filter-select {
+    padding: 10px 15px;
+    border: 2px solid #FFE4E1;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background: #FFF8DC;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-input:focus, .filter-select:focus {
+    outline: none;
+    border-color: #FFB3BA;
+}
+
+.history-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.empty-history {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9B6B9B;
+}
+
+.empty-history i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-history p {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.empty-history p:last-child {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.history-item {
+    background: #FFF8DC;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 4px solid #FFB3BA;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(255, 179, 186, 0.2);
+}
+
+.history-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.history-date {
+    font-weight: 600;
+    color: #8B5A8B;
+}
+
+.history-count {
+    background: #FFB3BA;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.history-summary {
+    color: #9B6B9B;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+    .mood-grid {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+    
+    .mood-item {
+        padding: 10px 5px;
+    }
+    
+    .mood-item i {
+        font-size: 1.2rem;
+    }
+    
+    .mood-item span {
+        font-size: 0.7rem;
+    }
+
+    .history-controls {
+        flex-direction: column;
+    }
+
+    .search-input {
+        min-width: auto;
+    }
+
+    .weekly-summary, .monthly-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 自訂心情表單 */
+.custom-mood-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 2px solid #FFE4E1;
+    z-index: 1000;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.custom-mood-form h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #8B5A8B;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #8B5A8B;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #FFE4E1;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background: #FFF8DC;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: #FFB3BA;
+}
+
+/* Emoji選擇器 */
+.emoji-picker {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 2px solid #FFE4E1;
+    border-radius: 10px;
+    background: #FFF8DC;
+}
+
+.emoji-option {
+    width: 40px;
+    height: 40px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.emoji-option:hover {
+    border-color: #FFB3BA;
+    transform: scale(1.1);
+}
+
+.emoji-option.selected {
+    border-color: #FFB3BA;
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    transform: scale(1.1);
+}
+
+.selected-emoji-display {
+    text-align: center;
+    padding: 10px;
+    background: #FFF8DC;
+    border-radius: 10px;
+    border: 2px solid #FFE4E1;
+}
+
+/* 分數滑桿 */
+.score-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #FFF8DC;
+    border-radius: 10px;
+    border: 2px solid #FFE4E1;
+}
+
+.score-slider {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #FFE4E1;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.score-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(255, 179, 186, 0.3);
+}
+
+.score-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(255, 179, 186, 0.3);
+}
+
+#scoreDisplay {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #8B5A8B;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* 表單按鈕 */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.add-custom-btn, .cancel-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.add-custom-btn {
+    background: linear-gradient(135deg, #FFB3BA, #FFC0CB);
+    color: white;
+}
+
+.add-custom-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 179, 186, 0.4);
+}
+
+.cancel-btn {
+    background: #F0F0F0;
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background: #E0E0E0;
+    transform: translateY(-2px);
+}
+
+/* 自訂心情按鈕樣式 */
+.custom-mood-btn {
+    background: linear-gradient(135deg, #BAE1FF, #BAFFC9) !important;
+    border: 2px dashed #8B5A8B !important;
+    color: #8B5A8B !important;
+    font-weight: 600;
+}
+
+.custom-mood-btn:hover {
+    background: linear-gradient(135deg, #A8D8FF, #A8FFB8) !important;
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .custom-mood-form {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .emoji-picker {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .emoji-picker {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .emoji-option {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
+
+/* 心情選項刪除按鈕 */
+.delete-mood-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 107, 107, 0.9);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.mood-item:hover .delete-mood-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.delete-mood-btn:hover {
+    background: rgba(255, 107, 107, 1);
+    transform: scale(1.1);
+}
+
+/* 自訂心情選項樣式 */
+.mood-item.custom-mood-item {
+    position: relative;
+    border: 2px dashed #8B5A8B;
+    background: linear-gradient(135deg, #FFF8DC, #FFE4E1);
+}
+
+.mood-item.custom-mood-item:hover {
+    border-color: #FFB3BA;
+    background: linear-gradient(135deg, #FFE4E1, #FFB3BA);
+}
+
+/* 確保心情選項有相對定位 */
+.mood-item {
+    position: relative;
+} 
