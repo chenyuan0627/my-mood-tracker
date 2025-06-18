@@ -9,6 +9,7 @@ class MoodTracker {
     init() {
         this.loadMoods();
         this.setupEventListeners();
+        this.loadCustomMoods();
         this.updateUI();
     }
 
@@ -124,16 +125,25 @@ class MoodTracker {
 
         // 創建新的心情選項
         const newMoodElement = document.createElement('div');
-        newMoodElement.className = 'mood-item';
+        newMoodElement.className = 'mood-item custom-mood-item';
         newMoodElement.dataset.mood = name;
         newMoodElement.dataset.score = score;
         newMoodElement.innerHTML = `
             <span style="font-size: 2rem;">${emoji}</span>
             <span>${name}</span>
+            <button class="delete-mood-btn" onclick="moodTracker.deleteCustomMood('${name}')" title="刪除此心情">
+                <i class="fas fa-times"></i>
+            </button>
         `;
 
         // 添加點擊事件
-        newMoodElement.addEventListener('click', () => this.selectMood(newMoodElement));
+        newMoodElement.addEventListener('click', (e) => {
+            // 如果點擊的是刪除按鈕，不觸發選擇
+            if (e.target.closest('.delete-mood-btn')) {
+                return;
+            }
+            this.selectMood(newMoodElement);
+        });
 
         // 根據分數排序插入到正確位置
         const moodGrid = document.querySelector('.mood-grid');
@@ -153,11 +163,98 @@ class MoodTracker {
         // 插入新心情
         moodGrid.insertBefore(newMoodElement, insertBeforeElement);
 
+        // 儲存自訂心情到本地
+        this.saveCustomMoods();
+
         // 隱藏表單
         this.hideCustomMoodForm();
 
         // 顯示成功訊息
         this.showNotification(`已新增心情：${name}`, 'success');
+    }
+
+    // 刪除自訂心情
+    deleteCustomMood(moodName) {
+        // 確認刪除
+        if (!confirm(`確定要刪除心情「${moodName}」嗎？`)) {
+            return;
+        }
+
+        // 移除DOM元素
+        const moodElement = document.querySelector(`[data-mood="${moodName}"]`);
+        if (moodElement) {
+            moodElement.remove();
+        }
+
+        // 從本地儲存中移除
+        this.saveCustomMoods();
+
+        // 顯示成功訊息
+        this.showNotification(`已刪除心情：${moodName}`, 'success');
+    }
+
+    // 儲存自訂心情到本地
+    saveCustomMoods() {
+        const customMoods = [];
+        document.querySelectorAll('.mood-item.custom-mood-item').forEach(item => {
+            const emojiSpan = item.querySelector('span');
+            customMoods.push({
+                name: item.dataset.mood,
+                score: parseInt(item.dataset.score),
+                emoji: emojiSpan.textContent
+            });
+        });
+        localStorage.setItem('customMoods', JSON.stringify(customMoods));
+        console.log('自訂心情已儲存:', customMoods.length, '個');
+    }
+
+    // 載入自訂心情
+    loadCustomMoods() {
+        const saved = localStorage.getItem('customMoods');
+        const customMoods = saved ? JSON.parse(saved) : [];
+        console.log('自訂心情已載入:', customMoods.length, '個');
+
+        // 重新建立自訂心情元素
+        customMoods.forEach(mood => {
+            const newMoodElement = document.createElement('div');
+            newMoodElement.className = 'mood-item custom-mood-item';
+            newMoodElement.dataset.mood = mood.name;
+            newMoodElement.dataset.score = mood.score;
+            newMoodElement.innerHTML = `
+                <span style="font-size: 2rem;">${mood.emoji}</span>
+                <span>${mood.name}</span>
+                <button class="delete-mood-btn" onclick="moodTracker.deleteCustomMood('${mood.name}')" title="刪除此心情">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // 添加點擊事件
+            newMoodElement.addEventListener('click', (e) => {
+                // 如果點擊的是刪除按鈕，不觸發選擇
+                if (e.target.closest('.delete-mood-btn')) {
+                    return;
+                }
+                this.selectMood(newMoodElement);
+            });
+
+            // 根據分數排序插入到正確位置
+            const moodGrid = document.querySelector('.mood-grid');
+            const moodItems = Array.from(moodGrid.querySelectorAll('.mood-item:not(.custom-mood-btn)'));
+            const customMoodBtn = document.querySelector('.custom-mood-btn');
+            
+            // 找到正確的插入位置
+            let insertBeforeElement = customMoodBtn;
+            for (let i = 0; i < moodItems.length; i++) {
+                const itemScore = parseInt(moodItems[i].dataset.score);
+                if (mood.score > itemScore) {
+                    insertBeforeElement = moodItems[i];
+                    break;
+                }
+            }
+            
+            // 插入自訂心情
+            moodGrid.insertBefore(newMoodElement, insertBeforeElement);
+        });
     }
 
     selectMood(item) {
@@ -192,8 +289,10 @@ class MoodTracker {
             emoji: this.selectedMood.emoji,
             note: note,
             timestamp: now.toISOString(),
-            date: this.formatDate(now)
+            date: this.formatDate(this.currentDate)
         };
+
+        console.log('新增心情記錄:', moodEntry);
 
         // 添加到心情列表
         this.moods.push(moodEntry);
@@ -258,7 +357,9 @@ class MoodTracker {
 
     getMoodsForCurrentDate() {
         const currentDateStr = this.formatDate(this.currentDate);
-        return this.moods.filter(mood => mood.date === currentDateStr);
+        const filteredMoods = this.moods.filter(mood => mood.date === currentDateStr);
+        console.log('當前日期:', currentDateStr, '找到心情記錄:', filteredMoods.length, '筆');
+        return filteredMoods;
     }
 
     updateUI() {
@@ -348,11 +449,13 @@ class MoodTracker {
 
     saveMoods() {
         localStorage.setItem('moodTracker', JSON.stringify(this.moods));
+        console.log('心情資料已儲存:', this.moods.length, '筆記錄');
     }
 
     loadMoods() {
         const saved = localStorage.getItem('moodTracker');
         this.moods = saved ? JSON.parse(saved) : [];
+        console.log('心情資料已載入:', this.moods.length, '筆記錄');
     }
 
     showNotification(message, type = 'info') {
