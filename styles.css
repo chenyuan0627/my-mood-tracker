@@ -69,7 +69,6 @@ header p {
     transition: all 0.3s ease;
     border: 2px solid transparent;
     background: #FFF8DC;
-    position: relative;
 }
 
 .mood-item:hover {
@@ -1081,52 +1080,4 @@ header p {
         height: 35px;
         font-size: 1rem;
     }
-}
-
-/* 心情選項刪除按鈕 */
-.delete-mood-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 20px;
-    height: 20px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255, 107, 107, 0.9);
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    transition: all 0.3s ease;
-    opacity: 0;
-    transform: scale(0.8);
-}
-
-.mood-item:hover .delete-mood-btn {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.delete-mood-btn:hover {
-    background: rgba(255, 107, 107, 1);
-    transform: scale(1.1);
-}
-
-/* 自訂心情選項樣式 */
-.mood-item.custom-mood-item {
-    position: relative;
-    border: 2px dashed #8B5A8B;
-    background: linear-gradient(135deg, #FFF8DC, #FFE4E1);
-}
-
-.mood-item.custom-mood-item:hover {
-    border-color: #FFB3BA;
-    background: linear-gradient(135deg, #FFE4E1, #FFB3BA);
-}
-
-/* 確保心情選項有相對定位 */
-.mood-item {
-    position: relative;
 } 
