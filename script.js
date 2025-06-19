@@ -20,15 +20,20 @@ class MoodTracker {
         });
 
         // 新增心情按鈕
-        document.getElementById('addMoodBtn').addEventListener('click', () => this.addMood());
+        const addMoodBtn = document.getElementById('addMoodBtn');
+        if (addMoodBtn) addMoodBtn.addEventListener('click', () => this.addMood());
 
         // 日期導航
-        document.getElementById('prevDay').addEventListener('click', () => this.changeDate(-1));
-        document.getElementById('nextDay').addEventListener('click', () => this.changeDate(1));
+        const prevDay = document.getElementById('prevDay');
+        if (prevDay) prevDay.addEventListener('click', () => this.changeDate(-1));
+        const nextDay = document.getElementById('nextDay');
+        if (nextDay) nextDay.addEventListener('click', () => this.changeDate(1));
 
         // 日曆控制
-        document.getElementById('prevMonth').addEventListener('click', () => this.changeMonth(-1));
-        document.getElementById('nextMonth').addEventListener('click', () => this.changeMonth(1));
+        const prevMonth = document.getElementById('prevMonth');
+        if (prevMonth) prevMonth.addEventListener('click', () => this.changeMonth(-1));
+        const nextMonth = document.getElementById('nextMonth');
+        if (nextMonth) nextMonth.addEventListener('click', () => this.changeMonth(1));
 
         // 統計標籤切換
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -36,11 +41,14 @@ class MoodTracker {
         });
 
         // 歷史記錄搜尋和篩選
-        document.getElementById('historySearch').addEventListener('input', () => this.filterHistory());
-        document.getElementById('historyFilter').addEventListener('change', () => this.filterHistory());
+        const historySearch = document.getElementById('historySearch');
+        if (historySearch) historySearch.addEventListener('input', () => this.filterHistory());
+        const historyFilter = document.getElementById('historyFilter');
+        if (historyFilter) historyFilter.addEventListener('change', () => this.filterHistory());
 
         // 檔案輸入事件監聽器
-        document.getElementById('importFile').addEventListener('change', (e) => {
+        const importFile = document.getElementById('importFile');
+        if (importFile) importFile.addEventListener('change', (e) => {
             this.handleFileImport(e);
         });
 
@@ -57,7 +65,8 @@ class MoodTracker {
                 // 選中當前emoji
                 option.classList.add('selected');
                 // 更新顯示的emoji
-                document.getElementById('selectedEmoji').textContent = option.dataset.emoji;
+                const selectedEmoji = document.getElementById('selectedEmoji');
+                if (selectedEmoji) selectedEmoji.textContent = option.dataset.emoji;
             });
         });
 
@@ -80,23 +89,25 @@ class MoodTracker {
 
     // 顯示自訂心情表單
     showCustomMoodForm() {
-        document.getElementById('customMoodForm').style.display = 'block';
-        // 清空表單
-        document.getElementById('customMoodName').value = '';
-        document.getElementById('customMoodScore').value = '0';
-        document.getElementById('scoreDisplay').textContent = '0';
-        // 重置emoji選擇
+        const form = document.getElementById('customMoodForm');
+        if (form) form.style.display = 'block';
+        const name = document.getElementById('customMoodName');
+        if (name) name.value = '';
+        const score = document.getElementById('customMoodScore');
+        if (score) score.value = '0';
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        if (scoreDisplay) scoreDisplay.textContent = '0';
         document.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
         const firstEmojiOption = document.querySelector('.emoji-option');
-        if (firstEmojiOption) {
-            firstEmojiOption.classList.add('selected');
-        }
-        document.getElementById('selectedEmoji').textContent = '😊';
+        if (firstEmojiOption) firstEmojiOption.classList.add('selected');
+        const selectedEmoji = document.getElementById('selectedEmoji');
+        if (selectedEmoji) selectedEmoji.textContent = '😊';
     }
 
     // 隱藏自訂心情表單
     hideCustomMoodForm() {
-        document.getElementById('customMoodForm').style.display = 'none';
+        const form = document.getElementById('customMoodForm');
+        if (form) form.style.display = 'none';
     }
 
     // 新增自訂心情
@@ -268,10 +279,12 @@ class MoodTracker {
         };
 
         // 顯示便條區域
-        document.querySelector('.note-section').style.display = 'block';
+        const noteSection = document.querySelector('.note-section');
+        if (noteSection) noteSection.style.display = 'block';
 
         // 啟用新增按鈕
-        document.getElementById('addMoodBtn').disabled = false;
+        const addMoodBtn = document.getElementById('addMoodBtn');
+        if (addMoodBtn) addMoodBtn.disabled = false;
     }
 
     addMood() {
@@ -308,9 +321,12 @@ class MoodTracker {
 
     resetSelection() {
         document.querySelectorAll('.mood-item').forEach(item => item.classList.remove('selected'));
-        document.getElementById('moodNote').value = '';
-        document.querySelector('.note-section').style.display = 'none';
-        document.getElementById('addMoodBtn').disabled = true;
+        const moodNote = document.getElementById('moodNote');
+        if (moodNote) moodNote.value = '';
+        const noteSection = document.querySelector('.note-section');
+        if (noteSection) noteSection.style.display = 'none';
+        const addMoodBtn = document.getElementById('addMoodBtn');
+        if (addMoodBtn) addMoodBtn.disabled = true;
         this.selectedMood = null;
     }
 
@@ -363,10 +379,12 @@ class MoodTracker {
         this.updateCalendar();
         this.updateStatsOverview();
         this.updateHistoryList();
+        setTimeout(() => this.updateMonthTrendSelect(), 0);
     }
 
     updateDateDisplay() {
-        document.getElementById('currentDate').textContent = this.getCurrentDateString();
+        const currentDateEl = document.getElementById('currentDate');
+        if (currentDateEl) currentDateEl.textContent = this.getCurrentDateString();
     }
 
     updateTimeline() {
@@ -423,12 +441,15 @@ class MoodTracker {
         const count = currentMoods.length;
 
         // 更新分數顯示
-        document.getElementById('dailyScore').textContent = totalScore;
-        document.getElementById('moodCount').textContent = count;
+        const dailyScore = document.getElementById('dailyScore');
+        if (dailyScore) dailyScore.textContent = totalScore;
+        const moodCount = document.getElementById('moodCount');
+        if (moodCount) moodCount.textContent = count;
 
         // 更新分數描述
         const scoreDescription = this.getScoreDescription(totalScore, count);
-        document.getElementById('scoreDescription').textContent = scoreDescription;
+        const scoreDescEl = document.getElementById('scoreDescription');
+        if (scoreDescEl) scoreDescEl.textContent = scoreDescription;
     }
 
     getScoreDescription(score, count) {
@@ -516,8 +537,8 @@ class MoodTracker {
         const month = this.currentDate.getMonth();
         
         // 更新月份顯示
-        document.getElementById('currentMonth').textContent = 
-            `${year}年${month + 1}月`;
+        const currentMonth = document.getElementById('currentMonth');
+        if (currentMonth) currentMonth.textContent = `${year}年${month + 1}月`;
         
         // 生成日曆
         this.generateCalendarDays(year, month);
@@ -578,54 +599,21 @@ class MoodTracker {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        const tabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+        if (tabBtn) tabBtn.classList.add('active');
         
         // 更新內容
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
         });
-        document.getElementById(`${tabName}Stats`).classList.add('active');
+        const tabContent = document.getElementById(`${tabName}Stats`);
+        if (tabContent) tabContent.classList.add('active');
         
-        this.updateStatsOverview();
+        this.updateStatsOverview && this.updateStatsOverview();
     }
 
     updateStatsOverview() {
-        this.updateWeeklyStats();
         this.updateMonthlyStats();
-    }
-
-    updateWeeklyStats() {
-        const today = new Date();
-        const weekStart = new Date(today);
-        weekStart.setDate(today.getDate() - today.getDay());
-        
-        const weeklyMoods = this.getMoodsInDateRange(weekStart, today);
-        const totalScore = weeklyMoods.reduce((sum, mood) => sum + mood.score, 0);
-        const avgScore = weeklyMoods.length > 0 ? (totalScore / weeklyMoods.length).toFixed(1) : 0;
-        
-        // 找出最佳心情日
-        const dailyScores = {};
-        weeklyMoods.forEach(mood => {
-            if (!dailyScores[mood.date]) {
-                dailyScores[mood.date] = { total: 0, count: 0 };
-            }
-            dailyScores[mood.date].total += mood.score;
-            dailyScores[mood.date].count++;
-        });
-        
-        let bestDay = '-';
-        let bestScore = -Infinity;
-        Object.entries(dailyScores).forEach(([date, data]) => {
-            const avg = data.total / data.count;
-            if (avg > bestScore) {
-                bestScore = avg;
-                bestDay = this.formatDisplayDate(date);
-            }
-        });
-        
-        document.getElementById('weeklyAvgScore').textContent = avgScore;
-        document.getElementById('weeklyTotalCount').textContent = weeklyMoods.length;
-        document.getElementById('weeklyBestDay').textContent = bestDay;
     }
 
     updateMonthlyStats() {
@@ -661,9 +649,12 @@ class MoodTracker {
             }
         });
         
-        document.getElementById('monthlyAvgScore').textContent = avgScore;
-        document.getElementById('monthlyTotalCount').textContent = monthlyMoods.length;
-        document.getElementById('monthlyBestWeek').textContent = bestWeek;
+        const monthlyAvgScore = document.getElementById('monthlyAvgScore');
+        if (monthlyAvgScore) monthlyAvgScore.textContent = avgScore;
+        const monthlyTotalCount = document.getElementById('monthlyTotalCount');
+        if (monthlyTotalCount) monthlyTotalCount.textContent = monthlyMoods.length;
+        const monthlyBestWeek = document.getElementById('monthlyBestWeek');
+        if (monthlyBestWeek) monthlyBestWeek.textContent = bestWeek;
     }
 
     getMoodsInDateRange(startDate, endDate) {
@@ -814,7 +805,7 @@ class MoodTracker {
     // 還原資料功能
     importData() {
         const fileInput = document.getElementById('importFile');
-        fileInput.click();
+        if (fileInput) fileInput.click();
     }
 
     // 處理檔案匯入
@@ -867,6 +858,158 @@ class MoodTracker {
         };
         
         reader.readAsText(file);
+    }
+
+    updateMonthTrendSelect() {
+        const select = document.getElementById('monthTrendSelect');
+        if (!select) return;
+        const months = this.getAllMonthsWithData();
+        // 一定要有本月，且所有月份都要去重、排序新到舊
+        const today = new Date();
+        const thisMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+        const set = new Set([thisMonth, ...months]);
+        const allMonths = Array.from(set).sort((a, b) => b.localeCompare(a));
+        this.fillMonthOptions(select, allMonths);
+        // 若未選擇，預設選本月
+        if (!this.selectedTrendMonth || !allMonths.includes(this.selectedTrendMonth)) {
+            this.selectedTrendMonth = thisMonth;
+        }
+        select.value = this.selectedTrendMonth;
+        // 監聽變化（只加一次）
+        if (!select._trendListener) {
+            select.addEventListener('change', () => {
+                this.selectedTrendMonth = select.value;
+                this.updateWeeklyStats();
+            });
+            select._trendListener = true;
+        }
+        // 每次都要刷新圖表（避免 updateUI 蓋掉）
+        this.updateWeeklyStats();
+    }
+
+    fillMonthOptions(select, months) {
+        select.innerHTML = '';
+        months.forEach(month => {
+            const option = document.createElement('option');
+            option.value = month;
+            const [y, m] = month.split('-');
+            option.textContent = `${y}年${m}月`;
+            select.appendChild(option);
+        });
+    }
+
+    getAllMonthsWithData() {
+        // 回傳所有有紀錄的年月（yyyy-MM），新到舊
+        const set = new Set();
+        this.moods.forEach(mood => {
+            if (mood.date) {
+                const d = new Date(mood.date);
+                const ym = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+                set.add(ym);
+            }
+        });
+        return Array.from(set).sort((a, b) => b.localeCompare(a));
+    }
+
+    updateWeeklyStats() {
+        // 依照 this.selectedTrendMonth 顯示該月
+        let year, month;
+        if (this.selectedTrendMonth) {
+            const [y, m] = this.selectedTrendMonth.split('-');
+            year = parseInt(y);
+            month = parseInt(m) - 1;
+        } else {
+            const today = new Date();
+            year = today.getFullYear();
+            month = today.getMonth();
+        }
+        const monthStart = new Date(year, month, 1);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        // 取得該月所有心情
+        const monthlyMoods = this.getMoodsInDateRange(monthStart, new Date(year, month, daysInMonth));
+        const totalScore = monthlyMoods.reduce((sum, mood) => sum + mood.score, 0);
+        const avgScore = monthlyMoods.length > 0 ? (totalScore / monthlyMoods.length).toFixed(1) : 0;
+        // 找出最佳心情日
+        const dailyScores = {};
+        monthlyMoods.forEach(mood => {
+            if (!dailyScores[mood.date]) {
+                dailyScores[mood.date] = { total: 0, count: 0 };
+            }
+            dailyScores[mood.date].total += mood.score;
+            dailyScores[mood.date].count++;
+        });
+        let bestDay = '-';
+        let bestScore = -Infinity;
+        Object.entries(dailyScores).forEach(([date, data]) => {
+            const avg = data.total / data.count;
+            if (avg > bestScore) {
+                bestScore = avg;
+                bestDay = this.formatDisplayDate(date);
+            }
+        });
+        const weeklyAvgScore = document.getElementById('weeklyAvgScore');
+        if (weeklyAvgScore) weeklyAvgScore.textContent = avgScore;
+        const weeklyTotalCount = document.getElementById('weeklyTotalCount');
+        if (weeklyTotalCount) weeklyTotalCount.textContent = monthlyMoods.length;
+        const weeklyBestDay = document.getElementById('weeklyBestDay');
+        if (weeklyBestDay) weeklyBestDay.textContent = bestDay;
+        // ====== 心情趨勢圖（該月每日分數） ======
+        const labels = [];
+        const data = [];
+        for (let d = 1; d <= daysInMonth; d++) {
+            const date = new Date(year, month, d);
+            const dateStr = this.formatDate(date);
+            labels.push((month + 1) + '/' + d);
+            const moods = this.moods.filter(mood => mood.date === dateStr);
+            const total = moods.reduce((sum, mood) => sum + mood.score, 0);
+            const avg = moods.length ? (total / moods.length) : 0;
+            data.push(avg);
+        }
+        const chartDiv = document.getElementById('weeklyChart');
+        if (chartDiv) {
+            const canvasWidth = Math.max(daysInMonth * 36, 900); // 每天36px，最小900px
+            chartDiv.innerHTML = `<canvas id=\"weeklyChartCanvas\" width=\"${canvasWidth}\" height=\"220\"></canvas>`;
+            const canvas = document.getElementById('weeklyChartCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                if (this.weeklyChart) this.weeklyChart.destroy();
+                this.weeklyChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '每日平均分數',
+                            data: data,
+                            borderColor: '#4299e1',
+                            backgroundColor: 'rgba(66,153,225,0.1)',
+                            fill: true,
+                            spanGaps: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: { maxRotation: 0, minRotation: 0 },
+                                title: { display: true, text: '日期' }
+                            },
+                            y: { beginAtZero: true }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: true },
+                            zoom: {
+                                pan: { enabled: false },
+                                zoom: { enabled: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        // ====== 心情趨勢圖結束 ======
     }
 }
 
