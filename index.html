@@ -6,6 +6,7 @@
     <title>心情記錄器 - 記錄每一天的心情</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -297,12 +298,14 @@
         <!-- 統計概覽 -->
         <section class="stats-overview">
             <div class="stats-tabs">
-                <button class="tab-btn active" data-tab="weekly">週度統計</button>
-                <button class="tab-btn" data-tab="monthly">月份統計</button>
+                <button class="tab-btn active" data-tab="weekly">月度統計</button>
             </div>
             <div class="stats-content">
                 <div id="weeklyStats" class="tab-content active">
-                    <h4>本週心情趨勢</h4>
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                        <h4 style="margin:0;">心情趨勢圖</h4>
+                        <select id="monthTrendSelect" style="padding:6px 12px;border-radius:8px;border:1.5px solid #FFE4E1;font-size:1rem;"></select>
+                    </div>
                     <div class="weekly-chart">
                         <div id="weeklyChart" class="chart-container"></div>
                     </div>
@@ -318,26 +321,6 @@
                         <div class="summary-item">
                             <span class="summary-label">最佳心情日</span>
                             <span id="weeklyBestDay" class="summary-value">-</span>
-                        </div>
-                    </div>
-                </div>
-                <div id="monthlyStats" class="tab-content">
-                    <h4>本月心情趨勢</h4>
-                    <div class="monthly-chart">
-                        <div id="monthlyChart" class="chart-container"></div>
-                    </div>
-                    <div class="monthly-summary">
-                        <div class="summary-item">
-                            <span class="summary-label">本月平均分數</span>
-                            <span id="monthlyAvgScore" class="summary-value">0</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">本月記錄次數</span>
-                            <span id="monthlyTotalCount" class="summary-value">0</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">最佳心情週</span>
-                            <span id="monthlyBestWeek" class="summary-value">-</span>
                         </div>
                     </div>
                 </div>
