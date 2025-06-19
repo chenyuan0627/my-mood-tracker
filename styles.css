@@ -621,14 +621,24 @@ header p {
     font-size: 1.2rem;
 }
 
+.weekly-chart {
+    width: 100%;
+}
+
+#weeklyChart.chart-container {
+    background: transparent;
+}
+
 .chart-container {
-    height: 200px;
+    width: auto;
+    min-width: unset;
+    max-width: unset;
+    margin: 0 auto 20px auto;
     background: #FFF8DC;
     border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
     color: #9B6B9B;
     font-size: 1.1rem;
 }
